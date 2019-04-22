@@ -4,9 +4,13 @@ import com.github.byungtak.githubsearch.BuildConfig
 import com.github.byungtak.githubsearch.data.SearchDataRepository
 import com.github.byungtak.githubsearch.data.SearchRepository
 import com.github.byungtak.githubsearch.data.remote.ApiService
+import com.github.byungtak.githubsearch.data.remote.SearchRemoteDataRepository
+import com.github.byungtak.githubsearch.data.remote.SearchRemoteRepository
 import com.github.byungtak.githubsearch.ui.MainViewModel
 import com.github.byungtak.githubsearch.ui.favorite.FavoriteViewModel
 import com.github.byungtak.githubsearch.ui.search.SearchViewModel
+import com.github.byungtak.githubsearch.util.SchedulersProvider
+import com.github.byungtak.githubsearch.util.SchedulersProviderImpl
 import com.google.gson.Gson
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -18,14 +22,18 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 private const val LOGGING_INTERCEPTOR = "LOGGING_INTERCEPTOR"
+private const val HEADER_AUTH_KEY = "Authorization"
+private const val HEADER_AUTH_VALUE = "32f7a97b0f2a8c69d04fed5f8ec4917db5a4a9d5"
 
 val appModule = module {
     viewModel { MainViewModel() }
     viewModel { SearchViewModel(get()) }
     viewModel { FavoriteViewModel() }
 
-    single { SearchDataRepository() as SearchRepository }
+    single { SearchDataRepository(get(), get()) as SearchRepository }
+    single { SearchRemoteDataRepository(get()) as SearchRemoteRepository }
 
+    single { SchedulersProviderImpl() as SchedulersProvider }
     single { Gson() }
     single(LOGGING_INTERCEPTOR) {
         val logger = HttpLoggingInterceptor()
@@ -41,6 +49,15 @@ val appModule = module {
     single {
         OkHttpClient.Builder()
             .addInterceptor(get(LOGGING_INTERCEPTOR))
+            .addInterceptor {
+                val original = it.request()
+
+                val requestBuilder = original.newBuilder()
+                    .header(HEADER_AUTH_KEY, HEADER_AUTH_VALUE)
+
+                val request = requestBuilder.build()
+                it.proceed(request)
+            }
             .build()
     }
     single {

@@ -1,5 +1,6 @@
 package com.github.byungtak.githubsearch.ui.search
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.byungtak.githubsearch.BaseViewModel
@@ -27,6 +28,15 @@ internal class SearchViewModel(private val searchRepository: SearchRepository): 
                     .subscribe(_users::setValue) {it.printStackTrace()}
             )
         }
+    }
+
+    fun onFavoriteButtonClicked(user: User) {
+        disposables.add(
+            searchRepository
+                .addFavoriteUser(user)
+                .subscribe()
+        )
+        Log.d("MY_LOG", user.isFavorite.toString())
     }
 
 }

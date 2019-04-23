@@ -6,15 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.byungtak.githubsearch.R
 import com.github.byungtak.githubsearch.data.model.User
 
-internal class UserAdapter: RecyclerView.Adapter<UserViewHolder>() {
+internal class UserAdapter(private val onFavoriteClickHandler: (User) -> Unit): RecyclerView.Adapter<UserViewHolder>() {
 
     private val users = mutableListOf<User>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        return UserViewHolder(LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.item_user, parent, false)
-        )
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
+
+        return UserViewHolder(view, onFavoriteClickHandler)
     }
 
     override fun getItemCount(): Int = users.count()

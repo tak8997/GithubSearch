@@ -24,7 +24,7 @@ internal class SearchFragment: Fragment() {
 
     private val viewModel by viewModel<SearchViewModel>()
     private val userAdapter by lazy {
-        UserAdapter()
+        UserAdapter(viewModel::onFavoriteButtonClicked)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,6 +56,7 @@ internal class SearchFragment: Fragment() {
         with(user_recycler) {
             layoutManager = LinearLayoutManager(this@SearchFragment.context)
             adapter = userAdapter
+            setHasFixedSize(true)
         }
     }
 

@@ -14,5 +14,6 @@ internal data class User(
     val repos_url: String,
     val received_events_url: String,
     val type: String,
-    val score: Float
+    val score: Float,
+    var isFavorite: Boolean = false
 )

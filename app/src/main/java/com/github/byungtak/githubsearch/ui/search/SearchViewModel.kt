@@ -35,7 +35,7 @@ internal class SearchViewModel(private val searchRepository: UserRepository): Ba
     fun onFavoriteButtonClicked(user: User) {
         disposables.add(
             searchRepository
-                .addFavoriteUser(user)
+                .updateFavoriteUser(user)
                 .subscribe( {
                     val message = if (user.isFavorite) "좋아요 목록에 추가하였습니다" else "좋아요 목록에서 제거하였습니다"
                     _showFavoriteState.value = message

@@ -6,7 +6,7 @@ import io.reactivex.Single
 
 internal interface UserRepository {
 
-    fun addFavoriteUser(user: User): Completable
+    fun updateFavoriteUser(user: User): Completable
     fun searchUser(userText: String): Single<List<User>>
 
 }

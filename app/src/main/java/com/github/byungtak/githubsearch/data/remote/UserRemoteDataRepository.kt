@@ -3,7 +3,7 @@ package com.github.byungtak.githubsearch.data.remote
 import com.github.byungtak.githubsearch.data.model.User
 import io.reactivex.Single
 
-internal class SearchRemoteDataRepository(private val apiService: ApiService): SearchRemoteRepository {
+internal class UserRemoteDataRepository(private val apiService: ApiService): UserRemoteRepository {
 
     override fun searchUser(userText: String): Single<List<User>> = apiService
         .searchUser(userText)

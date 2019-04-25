@@ -20,6 +20,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
@@ -35,6 +36,9 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
     implementation 'com.google.android.material:material:1.1.0-alpha05'
+    implementation "androidx.room:room-runtime:2.1.0-alpha06"
+    implementation "androidx.room:room-rxjava2:2.1.0-alpha06"
+    kapt "androidx.room:room-compiler:2.1.0-alpha06"
 
     // glide
     implementation "com.github.bumptech.glide:glide:4.9.0"

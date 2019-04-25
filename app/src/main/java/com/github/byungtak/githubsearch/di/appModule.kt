@@ -1,11 +1,13 @@
 package com.github.byungtak.githubsearch.di
 
 import com.github.byungtak.githubsearch.BuildConfig
-import com.github.byungtak.githubsearch.data.SearchDataRepository
-import com.github.byungtak.githubsearch.data.SearchRepository
+import com.github.byungtak.githubsearch.data.UserDataRepository
+import com.github.byungtak.githubsearch.data.UserRepository
+import com.github.byungtak.githubsearch.data.local.UserLocalDataRepository
+import com.github.byungtak.githubsearch.data.local.UserLocalRepository
 import com.github.byungtak.githubsearch.data.remote.ApiService
-import com.github.byungtak.githubsearch.data.remote.SearchRemoteDataRepository
-import com.github.byungtak.githubsearch.data.remote.SearchRemoteRepository
+import com.github.byungtak.githubsearch.data.remote.UserRemoteDataRepository
+import com.github.byungtak.githubsearch.data.remote.UserRemoteRepository
 import com.github.byungtak.githubsearch.ui.MainViewModel
 import com.github.byungtak.githubsearch.ui.favorite.FavoriteViewModel
 import com.github.byungtak.githubsearch.ui.search.SearchViewModel
@@ -30,10 +32,15 @@ val appModule = module {
     viewModel { SearchViewModel(get()) }
     viewModel { FavoriteViewModel() }
 
-    single { SearchDataRepository(get(), get()) as SearchRepository }
-    single { SearchRemoteDataRepository(get()) as SearchRemoteRepository }
-
     single { SchedulersProviderImpl() as SchedulersProvider }
+
+    single { UserDataRepository(get(), get(), get()) as UserRepository }
+    single { UserLocalDataRepository() as UserLocalRepository }
+    single { UserRemoteDataRepository(get()) as UserRemoteRepository }
+
+//    single { Room.databaseBuilder(androidContext(), UsersDatabase::class.java, "user-db") }
+//    single { get<UsersDatabase>().userDao() }
+
     single { Gson() }
     single(LOGGING_INTERCEPTOR) {
         val logger = HttpLoggingInterceptor()

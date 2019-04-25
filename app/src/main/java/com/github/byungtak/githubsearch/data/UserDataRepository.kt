@@ -20,7 +20,7 @@ internal class UserDataRepository(
             .observeOn(schedulersProvider.ui())
     }
 
-    override fun addFavoriteUser(user: User): Completable {
+    override fun updateFavoriteUser(user: User): Completable {
         return if (user.isFavorite) {
             userLocalRepository
                 .addFavoriteUser(user)

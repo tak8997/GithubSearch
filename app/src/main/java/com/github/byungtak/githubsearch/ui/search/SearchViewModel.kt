@@ -1,11 +1,13 @@
 package com.github.byungtak.githubsearch.ui.search
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.byungtak.githubsearch.BaseViewModel
 import com.github.byungtak.githubsearch.data.UserRepository
 import com.github.byungtak.githubsearch.data.model.User
 import com.github.byungtak.githubsearch.util.isValidUser
+import retrofit2.http.HEAD
 
 internal class SearchViewModel(private val searchRepository: UserRepository): BaseViewModel() {
 

@@ -5,6 +5,7 @@ import com.github.byungtak.githubsearch.data.model.User
 import com.github.byungtak.githubsearch.data.remote.UserRemoteRepository
 import com.github.byungtak.githubsearch.util.SchedulersProvider
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
 
 internal class UserDataRepository(
@@ -28,10 +29,17 @@ internal class UserDataRepository(
                 .observeOn(schedulersProvider.ui())
         } else {
             userLocalRepository
-                .deleteFavoriteUser(user.id.toString())
+                .removeFavoriteUser(user.id.toString())
                 .subscribeOn(schedulersProvider.io())
                 .observeOn(schedulersProvider.ui())
         }
+    }
+
+    override fun getFavoriteUsers(): Flowable<List<User>> {
+        return userLocalRepository
+            .getFavoriteUsers()
+            .subscribeOn(schedulersProvider.io())
+            .observeOn(schedulersProvider.ui())
     }
 
 }

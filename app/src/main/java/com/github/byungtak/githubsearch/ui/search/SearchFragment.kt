@@ -9,11 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.byungtak.githubsearch.R
+import com.github.byungtak.githubsearch.data.model.User
 import com.github.byungtak.githubsearch.extension.onClick
 import com.github.byungtak.githubsearch.extension.onTextChanged
+import com.github.byungtak.githubsearch.ui.OnUserFavoriteClickListener
 import com.github.byungtak.githubsearch.ui.search.users.UserAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
+
 
 internal class SearchFragment: Fragment() {
 
@@ -22,6 +26,8 @@ internal class SearchFragment: Fragment() {
 
         fun newInstance() = SearchFragment()
     }
+
+    private var favoriteUserListener: OnUserFavoriteClickListener? = null
 
     private val viewModel by viewModel<SearchViewModel>()
     private val userAdapter by lazy {
@@ -41,8 +47,20 @@ internal class SearchFragment: Fragment() {
         setupListeners()
     }
 
+    fun removeUserFavorite(user: User) {
+        userAdapter.removeUserFavorite(user)
+    }
+
+    fun setupFavoriteUsers(users: List<User>) {
+        userAdapter.setupUserFavorite(users)
+    }
+
+    fun setOnUserFavoriteClickedListener(listener: OnUserFavoriteClickListener?) {
+        favoriteUserListener = listener
+    }
+
     private fun bindViewModel() {
-        with(viewModel) {
+        viewModel.run {
             users.observe(this@SearchFragment, Observer {
                 userAdapter.addUsers(it)
             })
@@ -52,7 +70,10 @@ internal class SearchFragment: Fragment() {
             })
 
             showFavoriteState.observe(this@SearchFragment, Observer {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                val message = if (it.isFavorite) "좋아요 목록에 추가하였습니다" else "좋아요 목록에서 제거하였습니다"
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
+                favoriteUserListener?.onFavoriteUserClicked(it, tag)
             })
         }
     }

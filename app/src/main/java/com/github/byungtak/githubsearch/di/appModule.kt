@@ -28,9 +28,9 @@ private const val HEADER_AUTH_KEY = "Authorization"
 private const val HEADER_AUTH_VALUE = "32f7a97b0f2a8c69d04fed5f8ec4917db5a4a9d5"
 
 val appModule = module {
-    viewModel { MainViewModel() }
+    viewModel { MainViewModel(get()) }
     viewModel { SearchViewModel(get()) }
-    viewModel { FavoriteViewModel() }
+    viewModel { FavoriteViewModel(get()) }
 
     single { SchedulersProviderImpl() as SchedulersProvider }
 

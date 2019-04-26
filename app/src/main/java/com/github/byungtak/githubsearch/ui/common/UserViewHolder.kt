@@ -1,6 +1,5 @@
-package com.github.byungtak.githubsearch.ui.search.users
+package com.github.byungtak.githubsearch.ui.common
 
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.github.byungtak.githubsearch.data.model.User

@@ -38,9 +38,6 @@ val appModule = module {
     single { UserLocalDataRepository() as UserLocalRepository }
     single { UserRemoteDataRepository(get()) as UserRemoteRepository }
 
-//    single { Room.databaseBuilder(androidContext(), UsersDatabase::class.java, "user-db") }
-//    single { get<UsersDatabase>().userDao() }
-
     single { Gson() }
     single(LOGGING_INTERCEPTOR) {
         val logger = HttpLoggingInterceptor()

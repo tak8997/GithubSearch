@@ -8,12 +8,14 @@ import com.github.byungtak.githubsearch.data.model.User
 import com.github.byungtak.githubsearch.extension.addFragment
 import com.github.byungtak.githubsearch.extension.hideFragment
 import com.github.byungtak.githubsearch.extension.showFragment
+import com.github.byungtak.githubsearch.ui.common.OnUserFavoriteClickListener
 import com.github.byungtak.githubsearch.ui.favorite.FavoriteFragment
 import com.github.byungtak.githubsearch.ui.search.SearchFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-internal class MainActivity : AppCompatActivity(), OnUserFavoriteClickListener {
+internal class MainActivity : AppCompatActivity(),
+    OnUserFavoriteClickListener {
 
     private val viewModel by viewModel<MainViewModel>()
 

@@ -12,8 +12,8 @@ import com.github.byungtak.githubsearch.R
 import com.github.byungtak.githubsearch.data.model.User
 import com.github.byungtak.githubsearch.extension.onClick
 import com.github.byungtak.githubsearch.extension.onTextChanged
-import com.github.byungtak.githubsearch.ui.OnUserFavoriteClickListener
-import com.github.byungtak.githubsearch.ui.search.users.UserAdapter
+import com.github.byungtak.githubsearch.ui.common.OnUserFavoriteClickListener
+import com.github.byungtak.githubsearch.ui.common.UserAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

@@ -1,4 +1,4 @@
-package com.github.byungtak.githubsearch.ui.search.users
+package com.github.byungtak.githubsearch.ui.common
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

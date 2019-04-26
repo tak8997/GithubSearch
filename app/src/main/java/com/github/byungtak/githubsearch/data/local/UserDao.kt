@@ -32,7 +32,7 @@ import io.reactivex.Flowable
 internal interface UserDao {
 
     @Query("SELECT * FROM Users WHERE isfavorite = 1")
-    fun getFavoriteUsers(): Flowable<User>
+    fun getFavoriteUsers(): Flowable<List<User>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFavoriteUser(user: User): Completable

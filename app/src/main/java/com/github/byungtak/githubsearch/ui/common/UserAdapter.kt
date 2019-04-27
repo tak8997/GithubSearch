@@ -30,14 +30,7 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
     }
 
     fun setUsers(users: List<User>) {
-        
-        users.forEach { user ->
-            favoriteUsers.forEach { favoriteUser ->
-                if (user.id == favoriteUser.id) {
-                    user.isFavorite = true
-                }
-            }
-        }
+        setFavoriteUser(users)
 
         this.users.clear()
         this.users.addAll(users)
@@ -45,21 +38,13 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
     }
 
     fun addUsers(users: List<User>) {
-        users.forEach { user ->
-            favoriteUsers.forEach { favoriteUser ->
-                if (user.id == favoriteUser.id) {
-                    user.isFavorite = true
-                }
-            }
-        }
+        setFavoriteUser(users)
 
         for (user in users) {
             this.users.add(user)
             notifyItemInserted(this.users.size - 1)
         }
     }
-
-
 
     fun addFavoriteUsers(users: List<User>) {
         this.users.clear()
@@ -94,6 +79,16 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
 
         adapterPosition?.let {
             notifyItemChanged(it)
+        }
+    }
+
+    private fun setFavoriteUser(users: List<User>) {
+        users.forEach { user ->
+            favoriteUsers.forEach { favoriteUser ->
+                if (user.id == favoriteUser.id) {
+                    user.isFavorite = true
+                }
+            }
         }
     }
 

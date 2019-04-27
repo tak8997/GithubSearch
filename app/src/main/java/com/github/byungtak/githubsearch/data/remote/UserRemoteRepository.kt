@@ -5,6 +5,6 @@ import io.reactivex.Single
 
 internal interface UserRemoteRepository {
 
-    fun searchUser(userText: String): Single<List<User>>
+    fun searchUser(query: String, currentPage: Int): Single<List<User>>
 
 }

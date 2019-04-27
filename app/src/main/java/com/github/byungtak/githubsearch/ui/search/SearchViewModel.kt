@@ -5,12 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import com.github.byungtak.githubsearch.BaseViewModel
 import com.github.byungtak.githubsearch.data.UserRepository
 import com.github.byungtak.githubsearch.data.model.User
-import com.github.byungtak.githubsearch.util.isValidUser
+import com.github.byungtak.githubsearch.util.isValidSearch
 
 internal class SearchViewModel(private val searchRepository: UserRepository): BaseViewModel() {
 
     private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> = _users
+
+    private val _addUsers = MutableLiveData<List<User>>()
+    val addUsers: LiveData<List<User>> = _addUsers
+
+    private val _lastQuery = MutableLiveData<String>()
+    val lastQuery: LiveData<String> = _lastQuery
 
     private val _searchBtnEnabled = MutableLiveData<Boolean>()
     val searchBtnEnabled: LiveData<Boolean> = _searchBtnEnabled
@@ -18,16 +24,24 @@ internal class SearchViewModel(private val searchRepository: UserRepository): Ba
     private val _showFavoriteState = MutableLiveData<User>()
     val showFavoriteState: LiveData<User> = _showFavoriteState
 
-    fun onUserTextChanged(userText: String) {
-        _searchBtnEnabled.value = isValidUser(userText)
+    fun onUserTextChanged(query: String) {
+        _searchBtnEnabled.value = isValidSearch(query)
     }
 
-    fun onUserSearchClicked(userText: String) {
-        if (isValidUser(userText)) {
+    fun searchUser(query: String, currentPage: Int = 1) {
+        if (isValidSearch(query)) {
             disposables.add(
                 searchRepository
-                    .searchUser(userText)
-                    .subscribe(_users::setValue) { it.printStackTrace() }
+                    .searchUser(query, currentPage)
+                    .subscribe({
+                        if (currentPage == 1) {
+                            _users.value = it
+                        } else {
+                            _addUsers.value = it
+                        }
+
+                        _lastQuery.value = query
+                    }) { it.printStackTrace() }
             )
         }
     }
@@ -40,10 +54,6 @@ internal class SearchViewModel(private val searchRepository: UserRepository): Ba
                     _showFavoriteState.value = user
                 } , { it.printStackTrace() })
         )
-    }
-
-    fun setupUserFavorite(users: List<User>) {
-
     }
 
 }

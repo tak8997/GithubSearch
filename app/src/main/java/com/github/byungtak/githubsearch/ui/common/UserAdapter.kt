@@ -11,6 +11,8 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
     private val users = mutableListOf<User>()
     private val favoriteUsers = mutableListOf<User>()
 
+    var lastQuery = ""
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
 
@@ -27,7 +29,8 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
         favoriteUsers.addAll(users)
     }
 
-    fun addUsers(users: List<User>) {
+    fun setUsers(users: List<User>) {
+        
         users.forEach { user ->
             favoriteUsers.forEach { favoriteUser ->
                 if (user.id == favoriteUser.id) {
@@ -40,6 +43,23 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
         this.users.addAll(users)
         notifyDataSetChanged()
     }
+
+    fun addUsers(users: List<User>) {
+        users.forEach { user ->
+            favoriteUsers.forEach { favoriteUser ->
+                if (user.id == favoriteUser.id) {
+                    user.isFavorite = true
+                }
+            }
+        }
+
+        for (user in users) {
+            this.users.add(user)
+            notifyItemInserted(this.users.size - 1)
+        }
+    }
+
+
 
     fun addFavoriteUsers(users: List<User>) {
         this.users.clear()

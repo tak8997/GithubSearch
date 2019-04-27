@@ -9,8 +9,10 @@ internal interface ApiService {
     companion object {
         const val BASE_URL = "https://api.github.com"
     }
-//    'https://api.github.com/user/repos?page=2&per_page=100'
+
     @GET("/search/users")
-    fun searchUser(@Query("q") query: String): Single<UserModel>
+    fun searchUser(@Query("q") query: String,
+                   @Query("page") page: Int,
+                   @Query("per_page") perPgae: Int = 15): Single<UserModel>
 
 }

@@ -8,36 +8,40 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.byungtak.githubsearch.R
 import com.github.byungtak.githubsearch.data.model.User
 import com.github.byungtak.githubsearch.extension.onClick
 import com.github.byungtak.githubsearch.extension.onTextChanged
 import com.github.byungtak.githubsearch.ui.common.OnUserFavoriteClickListener
+import com.github.byungtak.githubsearch.ui.common.PaginationScrollListener
 import com.github.byungtak.githubsearch.ui.common.UserAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 
 internal class SearchFragment: Fragment() {
 
     companion object {
         const val TAG = "search"
+        const val PAGE_START = 1
 
         fun newInstance() = SearchFragment()
     }
 
     private var favoriteUserListener: OnUserFavoriteClickListener? = null
+    private var currentPage = PAGE_START
+    private var isLoading = false
+    private var isLastPage = false
 
+    private val linearLayoutManager = LinearLayoutManager(activity)
     private val viewModel by viewModel<SearchViewModel>()
     private val userAdapter by lazy {
         UserAdapter(viewModel::onFavoriteButtonClicked)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        return inflater.inflate(com.github.byungtak.githubsearch.R.layout.fragment_search, container, false)
     }
-//페이징~~~~~~~~~~~~~~처리
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -62,7 +66,18 @@ internal class SearchFragment: Fragment() {
     private fun bindViewModel() {
         viewModel.run {
             users.observe(this@SearchFragment, Observer {
+                userAdapter.setUsers(it)
+            })
+
+            addUsers.observe(this@SearchFragment, Observer {
                 userAdapter.addUsers(it)
+
+                swipe_refresh.isRefreshing = false
+                this@SearchFragment.isLoading = false
+            })
+
+            lastQuery.observe(this@SearchFragment, Observer {
+                userAdapter.lastQuery = it
             })
 
             searchBtnEnabled.observe(this@SearchFragment, Observer {
@@ -80,7 +95,7 @@ internal class SearchFragment: Fragment() {
 
     private fun setupRecycler() {
         with(user_recycler) {
-            layoutManager = LinearLayoutManager(this@SearchFragment.context)
+            layoutManager = linearLayoutManager
             adapter = userAdapter
             setHasFixedSize(true)
         }
@@ -88,8 +103,29 @@ internal class SearchFragment: Fragment() {
 
     private fun setupListeners() {
         et_search.onTextChanged { viewModel.onUserTextChanged(it) }
+
         btn_search.onClick {
-            viewModel.onUserSearchClicked(et_search.text.toString())
+            val query = et_search.text.toString()
+            if (query != userAdapter.lastQuery) {
+                viewModel.searchUser(query)
+            }
+        }
+
+        user_recycler.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager) {
+            override var isLastPage: Boolean = this@SearchFragment.isLastPage
+
+            override var isLoading: Boolean = this@SearchFragment.isLoading
+
+            override fun loadMoreItems() {
+                this@SearchFragment.isLoading = true
+                currentPage += 1
+
+                viewModel.searchUser(userAdapter.lastQuery, currentPage)
+            }
+        })
+
+        swipe_refresh.setOnRefreshListener {
+            swipe_refresh.isRefreshing = false
         }
     }
 

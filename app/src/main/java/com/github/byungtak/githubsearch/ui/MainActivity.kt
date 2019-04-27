@@ -1,11 +1,10 @@
 package com.github.byungtak.githubsearch.ui
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.github.byungtak.githubsearch.BaseActivity
 import com.github.byungtak.githubsearch.R
 import com.github.byungtak.githubsearch.data.model.User
-import com.github.byungtak.githubsearch.databinding.ActivityMainBinding
 import com.github.byungtak.githubsearch.extension.addFragment
 import com.github.byungtak.githubsearch.extension.hideFragment
 import com.github.byungtak.githubsearch.extension.showFragment
@@ -15,18 +14,16 @@ import com.github.byungtak.githubsearch.ui.search.SearchFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-internal class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
-    OnUserFavoriteClickListener {
+internal class MainActivity : AppCompatActivity(), OnUserFavoriteClickListener {
 
     private val viewModel by viewModel<MainViewModel>()
 
     private val searchFragment = SearchFragment.newInstance()
     private val favoriteFragment = FavoriteFragment.newInstance()
 
-    override fun getLayoutRes(): Int = R.layout.activity_main
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         bindViewModel()
 

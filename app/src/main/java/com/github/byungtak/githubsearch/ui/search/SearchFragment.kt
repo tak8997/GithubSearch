@@ -1,7 +1,6 @@
 package com.github.byungtak.githubsearch.ui.search
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +56,6 @@ internal class SearchFragment: Fragment() {
     private fun bindViewModel() {
         viewModel.run {
             users.observe(this@SearchFragment, Observer {
-                Log.d("MY_LOG", "hh")
                 userAdapter.setUsers(it)
             })
 
@@ -124,6 +122,10 @@ internal class SearchFragment: Fragment() {
 
         swipe_refresh.setOnRefreshListener {
             swipe_refresh.isRefreshing = false
+        }
+
+        btn_clear.onClick {
+            et_search.text?.clear()
         }
     }
 

@@ -14,9 +14,9 @@ internal class UserDataRepository(
     private val schedulersProvider: SchedulersProvider
 ): UserRepository {
 
-    override fun searchUser(userText: String): Single<List<User>> {
+    override fun searchUser(query: String, currentPage: Int): Single<List<User>> {
         return searchRemoteRepository
-            .searchUser(userText)
+            .searchUser(query, currentPage)
             .subscribeOn(schedulersProvider.io())
             .observeOn(schedulersProvider.ui())
     }

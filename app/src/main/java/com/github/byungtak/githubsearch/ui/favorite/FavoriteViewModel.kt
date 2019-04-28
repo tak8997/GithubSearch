@@ -11,11 +11,25 @@ internal class FavoriteViewModel(private val searchRepository: UserRepository): 
     private val _removeUser = MutableLiveData<Pair<User, Int>>()
     val removeUser: LiveData<Pair<User, Int>> = _removeUser
 
+    private val _favoriteUsers = MutableLiveData<List<User>>()
+    val favoriteUsers: LiveData<List<User>> = _favoriteUsers
+
+    private val _throwable = MutableLiveData<Throwable>()
+    val throwable: LiveData<Throwable> = _throwable
+
     fun onFavoriteButtonClicked(user: User, adapterPosition: Int) {
         disposables.add(
             searchRepository
                 .updateFavoriteUser(user)
-                .subscribe({ _removeUser.value = Pair(user, adapterPosition) }) { it.printStackTrace() }
+                .subscribe({ _removeUser.value = Pair(user, adapterPosition) }) { _throwable.value = it }
+        )
+    }
+
+    fun getFavoriteUsers() {
+        disposables.add(
+            searchRepository
+                .getFavoriteUsers()
+                .subscribe(_favoriteUsers::setValue) { _throwable.value = it }
         )
     }
 

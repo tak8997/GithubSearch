@@ -5,8 +5,8 @@ import io.reactivex.Single
 
 internal class UserRemoteDataRepository(private val apiService: ApiService): UserRemoteRepository {
 
-    override fun searchUser(userText: String): Single<List<User>> = apiService
-        .searchUser(userText)
+    override fun searchUser(query: String, currentPage: Int): Single<List<User>> = apiService
+        .searchUser(query, currentPage)
         .map { it.items }
 
 }

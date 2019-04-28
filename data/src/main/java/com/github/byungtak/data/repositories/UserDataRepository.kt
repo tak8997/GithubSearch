@@ -19,9 +19,12 @@ class UserDataRepository(
             = userLocalRepository.saveFavoriteUser(userEntity)
 
     override fun removeFavoriteUser(userEntity: UserEntity): Completable
-            = userLocalRepository.removeFavoriteUser(userEntity.id.toString())
+            = userLocalRepository.removeFavoriteUser(userEntity)
 
     override fun getFavoriteUsers(): Observable<List<UserEntity>>
             = userLocalRepository.getFavoriteUsers()
 
+    override fun removeAllUsers(): Completable {
+        return userLocalRepository.removeAllUsers()
+    }
 }

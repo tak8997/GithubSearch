@@ -1,6 +1,6 @@
 package com.github.byungtak.githubsearch.util
 
 
-const val MIN_USER_LENGTH = 1
+const val MIN_QUERY_LENGTH = 1
 
-fun isValidSearch(userText: String) = userText.length >= MIN_USER_LENGTH
+fun isValidSearch(query: String) = query.length >= MIN_QUERY_LENGTH

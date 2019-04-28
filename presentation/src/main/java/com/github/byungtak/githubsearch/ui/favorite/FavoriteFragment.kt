@@ -41,10 +41,7 @@ internal class FavoriteFragment: Fragment() {
         setupRecycler()
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getFavoriteUsers()
-    }
+    fun getFavoriteUser() = viewModel.getFavoriteUsers()
 
     fun setOnUserFavoriteClickedListener(listener: OnUserFavoriteClickListener?) {
         favoriteUserListener = listener
@@ -62,7 +59,7 @@ internal class FavoriteFragment: Fragment() {
             })
 
             favoriteUsers.observe(this@FavoriteFragment, Observer {
-                userAdapter.setUsers(it)
+                userAdapter.setFavoriteUsers(it)
             })
 
             throwable.observe(this@FavoriteFragment, Observer {

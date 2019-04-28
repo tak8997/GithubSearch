@@ -27,7 +27,7 @@ class RemoveFavoriteUser(
 
     }
 
-    fun remove(userEntity: UserEntity): Observable<Completable> {
+    fun removeUser(userEntity: UserEntity): Observable<Completable> {
         val data = HashMap<String, UserEntity>()
         data[PARAM_USER_ENTITY] = userEntity
         return observable(data)

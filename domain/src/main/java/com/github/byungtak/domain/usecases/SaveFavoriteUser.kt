@@ -27,7 +27,9 @@ class SaveFavoriteUser(
 
     }
 
-    fun save(userEntity: UserEntity): Observable<Completable> {
+    fun saveUser(userEntity: UserEntity): Observable<Completable> {
+        userEntity.isFavorite = true
+
         val data = HashMap<String, UserEntity>()
         data[PARAM_USER_ENTITY] = userEntity
         return observable(data)

@@ -15,12 +15,6 @@ class SearchUser(
         private const val PARAM_SEARCH_QUERY = "param:search_query"
     }
 
-    fun searchUser(query: String, currentPage: Int): Observable<List<UserEntity>> {
-        val data = HashMap<String, Pair<String, Int>>()
-        data[PARAM_SEARCH_QUERY] = Pair(query, currentPage)
-        return observable(data)
-    }
-
     override fun createObservable(data: Map<String, Any>?): Observable<List<UserEntity>> {
         val searchData = data?.get(PARAM_SEARCH_QUERY)
         searchData?.let {
@@ -30,6 +24,12 @@ class SearchUser(
 
             return userRepository.searchUser(query as String, page as Int)
         } ?: return Observable.just(emptyList())
+    }
+
+    fun searchUser(query: String, currentPage: Int): Observable<List<UserEntity>> {
+        val data = HashMap<String, Pair<String, Int>>()
+        data[PARAM_SEARCH_QUERY] = Pair(query, currentPage)
+        return observable(data)
     }
 
 }

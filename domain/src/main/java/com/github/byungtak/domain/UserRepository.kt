@@ -10,5 +10,6 @@ interface UserRepository {
     fun removeFavoriteUser(userEntity: UserEntity): Completable
     fun searchUser(query: String, currentPage: Int): Observable<List<UserEntity>>
     fun getFavoriteUsers(): Observable<List<UserEntity>>
+    fun removeAllUsers(): Completable
 
 }

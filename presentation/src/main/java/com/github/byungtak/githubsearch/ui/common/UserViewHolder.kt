@@ -2,7 +2,7 @@ package com.github.byungtak.githubsearch.ui.common
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.github.byungtak.githubsearch.data.model.User
+import com.github.byungtak.githubsearch.entities.User
 import com.github.byungtak.githubsearch.extension.onClick
 import com.github.byungtak.githubsearch.extension.setImageWithGlide
 import kotlinx.android.synthetic.main.item_user.view.*

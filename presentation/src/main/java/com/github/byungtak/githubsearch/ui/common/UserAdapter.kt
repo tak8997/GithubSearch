@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.byungtak.githubsearch.R
-import com.github.byungtak.githubsearch.data.model.User
+import com.github.byungtak.githubsearch.entities.User
 
 internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Unit): RecyclerView.Adapter<UserViewHolder>() {
 
@@ -25,18 +25,18 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
         holder.bind(users[position])
     }
 
-    fun setupUserFavorite(users: List<User>) {
+    fun saveFavoriteUser(users: List<User>) {
         favoriteUsers.addAll(users)
     }
 
-    fun setupFavoriteUsers(users: List<User>) {
+    fun setFavoriteUsers(users: List<User>) {
         this.users.clear()
         this.users.addAll(users)
         notifyDataSetChanged()
     }
 
     fun setUsers(users: List<User>) {
-        setFavoriteUser(users)
+        setFavorite(users)
 
         this.users.clear()
         this.users.addAll(users)
@@ -44,7 +44,7 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
     }
 
     fun addUsers(users: List<User>) {
-        setFavoriteUser(users)
+        setFavorite(users)
 
         for (user in users) {
             this.users.add(user)
@@ -72,7 +72,7 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
         }
     }
 
-    private fun setFavoriteUser(users: List<User>) {
+    private fun setFavorite(users: List<User>) {
         users.forEach { user ->
             favoriteUsers.forEach { favoriteUser ->
                 if (user.id == favoriteUser.id) {

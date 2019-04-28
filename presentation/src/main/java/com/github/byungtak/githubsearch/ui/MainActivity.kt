@@ -3,7 +3,7 @@ package com.github.byungtak.githubsearch.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.byungtak.githubsearch.R
-import com.github.byungtak.githubsearch.data.model.User
+import com.github.byungtak.githubsearch.entities.User
 import com.github.byungtak.githubsearch.extension.addFragment
 import com.github.byungtak.githubsearch.extension.hideFragment
 import com.github.byungtak.githubsearch.extension.showFragment
@@ -42,6 +42,7 @@ internal class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_favorite -> {
+                    favoriteFragment.getFavoriteUser()
                     showFragment(FavoriteFragment.TAG)
                     true
                 }

@@ -1,4 +1,4 @@
-package com.github.byungtak.githubsearch.data.model
+package com.github.byungtak.githubsearch.entities
 
 data class User(
     val id: Int,

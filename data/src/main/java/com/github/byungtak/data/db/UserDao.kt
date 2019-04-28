@@ -16,13 +16,9 @@
 
 package com.github.byungtak.data.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import com.github.byungtak.domain.entities.UserEntity
+import androidx.room.*
+import com.github.byungtak.data.entities.UserData
 import io.reactivex.Completable
-import io.reactivex.Observable
 
 /**
  * Data Access Object for the users table.
@@ -30,16 +26,16 @@ import io.reactivex.Observable
 @Dao
 interface UserDao {
 
-    @Query("SELECT * FROM Users WHERE isfavorite = 1")
-    fun getFavoriteUsers(): Observable<List<UserEntity>>
+    @Query("SELECT * FROM users")
+    fun getFavoriteUsers(): List<UserData>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFavoriteUser(user: UserEntity): Completable
+    fun saveFavoriteUser(user: UserData)
 
-    @Query("DELETE FROM users WHERE userid= :userId")
-    fun deleteFavoriteUser(userId: String): Completable
+    @Delete
+    fun removeFavoriteUser(userData: UserData)
 
-    @Query("DELETE FROM Users")
-    fun deleteAllUsers()
+    @Query("DELETE FROM users")
+    fun removeAllFavoriteUsers(): Completable
 
 }

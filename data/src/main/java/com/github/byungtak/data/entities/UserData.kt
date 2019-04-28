@@ -1,54 +1,54 @@
 package com.github.byungtak.data.entities
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "users")
 data class UserData(
-    @ColumnInfo(name = "username")
+    @SerializedName("login")
     val login: String,
 
     @PrimaryKey
-    @ColumnInfo(name = "userid")
+    @SerializedName("id")
     val id: Int,
 
-    @ColumnInfo(name = "nodeid")
+    @SerializedName("node_id")
     val node_id: String,
 
-    @ColumnInfo(name = "userimage")
+    @SerializedName("avatar_url")
     val avatar_url: String,
 
-    @ColumnInfo(name = "gravatarid")
+    @SerializedName("gravatar_id")
     val gravatar_id: String,
 
-    @ColumnInfo(name = "url")
+    @SerializedName("url")
     val url: String,
 
-    @ColumnInfo(name = "html_url")
+    @SerializedName("html_url")
     val html_url: String,
 
-    @ColumnInfo(name = "followers_url")
+    @SerializedName("followers_url")
     val followers_url: String,
 
-    @ColumnInfo(name = "subscriptions_url")
+    @SerializedName("subscriptions_url")
     val subscriptions_url: String,
 
-    @ColumnInfo(name = "organizations_url")
+    @SerializedName("organizations_url")
     val organizations_url: String,
 
-    @ColumnInfo(name = "repos_url")
+    @SerializedName("repos_url")
     val repos_url: String,
 
-    @ColumnInfo(name = "received_events_url")
+    @SerializedName("received_events_url")
     val received_events_url: String,
 
-    @ColumnInfo(name = "type")
+    @SerializedName("type")
     val type: String,
 
-    @ColumnInfo(name = "score")
+    @SerializedName("score")
     val score: Float,
 
-    @ColumnInfo(name = "isfavorite")
+    @SerializedName("isfavorite")
     var isFavorite: Boolean = false
 )

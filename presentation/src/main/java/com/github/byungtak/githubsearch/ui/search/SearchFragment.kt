@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.byungtak.githubsearch.data.model.User
+import com.github.byungtak.githubsearch.entities.User
 import com.github.byungtak.githubsearch.extension.onClick
 import com.github.byungtak.githubsearch.extension.onTextChanged
 import com.github.byungtak.githubsearch.ui.common.PaginationScrollListener
@@ -84,7 +84,7 @@ internal class SearchFragment: Fragment() {
             })
 
             favoriteUsers.observe(this@SearchFragment, Observer {
-                userAdapter.setupUserFavorite(it)
+                userAdapter.saveFavoriteUser(it)
             })
         }
     }

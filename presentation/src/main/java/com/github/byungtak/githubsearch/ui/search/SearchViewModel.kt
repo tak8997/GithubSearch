@@ -4,12 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.byungtak.domain.common.Mapper
 import com.github.byungtak.domain.entities.UserEntity
-import com.github.byungtak.domain.usecases.GetFavoriteUser
-import com.github.byungtak.domain.usecases.RemoveFavoriteUser
-import com.github.byungtak.domain.usecases.SaveFavoriteUser
-import com.github.byungtak.domain.usecases.SearchUser
+import com.github.byungtak.domain.usecases.*
 import com.github.byungtak.githubsearch.BaseViewModel
-import com.github.byungtak.githubsearch.data.model.User
+import com.github.byungtak.githubsearch.entities.User
 import com.github.byungtak.githubsearch.util.isValidSearch
 
 internal class SearchViewModel(
@@ -17,6 +14,7 @@ internal class SearchViewModel(
     private val getFavoriteUser: GetFavoriteUser,
     private val saveFavoriteUser: SaveFavoriteUser,
     private val removeFavoriteUser: RemoveFavoriteUser,
+    private val removeAllFavoriteUser: RemoveAllFavoriteUser,
     private val entitiyUserMapper: Mapper<UserEntity, User>
 ): BaseViewModel() {
 
@@ -41,9 +39,13 @@ internal class SearchViewModel(
     private val _favoriteUsers = MutableLiveData<List<User>>()
     val favoriteUsers: LiveData<List<User>> = _favoriteUsers
 
-    private lateinit var userEntities: List<UserEntity>
+    private val userEntities = mutableListOf<UserEntity>()
 
     init {
+//        removeAllFavoriteUser.observable()
+//            .subscribe {
+//                Log.d("MY_LOG", "clear")
+//            }
         getFavoriteUsers()
     }
 
@@ -52,12 +54,16 @@ internal class SearchViewModel(
     }
 
     fun searchUser(query: String, currentPage: Int = 1) {
+        if (currentPage == 1) {
+            userEntities.clear()
+        }
+
         if (isValidSearch(query)) {
             disposables.add(
                 searchUser
                     .searchUser(query, currentPage)
                     .map {
-                        userEntities = it
+                        userEntities.addAll(it)
                         it
                     }
                     .flatMap { entitiyUserMapper.observable(it) }
@@ -67,20 +73,9 @@ internal class SearchViewModel(
                         } else {
                             _addUsers.value = it
                         }
+
+                        _lastQuery.value = query
                     }) { _throwable.value = it }
-
-
-//                searchRepository
-//                    .searchUser(query, currentPage)
-//                    .subscribe({
-//                        if (currentPage == 1) {
-//                            _users.value = it
-//                        } else {
-//                            _addUsers.value = it
-//                        }
-//
-//                        _lastQuery.value = query
-//                    }) { _throwable.value = it }
             )
         }
     }
@@ -89,7 +84,7 @@ internal class SearchViewModel(
         if (user.isFavorite) {
             disposables.add(
                 saveFavoriteUser
-                    .save(userEntities[adapterPosition])
+                    .saveUser(userEntities[adapterPosition])
                     .subscribe({
                         _showFavoriteState.value = user.isFavorite
                     }, { _throwable.value = it })
@@ -97,20 +92,12 @@ internal class SearchViewModel(
         } else {
             disposables.add(
                 removeFavoriteUser
-                    .remove(userEntities[adapterPosition])
+                    .removeUser(userEntities[adapterPosition])
                     .subscribe({
                         _showFavoriteState.value = user.isFavorite
                     }, { _throwable.value = it })
             )
         }
-//        disposables.add(
-
-//            searchRepository
-//                .updateFavoriteUser(user)
-//                .subscribe( {
-//                    _showFavoriteState.value = user
-//                } , { _throwable.value = it })
-//        )
     }
 
     private fun getFavoriteUsers() {
@@ -118,10 +105,9 @@ internal class SearchViewModel(
             getFavoriteUser
                 .observable()
                 .flatMap { entitiyUserMapper.observable(it) }
-                .subscribe(_favoriteUsers::setValue) { _throwable.value = it }
-//            searchRepository
-//                .getFavoriteUsers()
-//                .subscribe(_favoriteUsers::setValue) { _throwable.value = it }
+                .subscribe(_favoriteUsers::setValue) {
+                    it.printStackTrace()
+                    _throwable.value = it }
         )
     }
 

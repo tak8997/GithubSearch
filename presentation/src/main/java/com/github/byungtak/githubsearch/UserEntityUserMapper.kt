@@ -2,7 +2,7 @@ package com.github.byungtak.githubsearch
 
 import com.github.byungtak.domain.common.Mapper
 import com.github.byungtak.domain.entities.UserEntity
-import com.github.byungtak.githubsearch.data.model.User
+import com.github.byungtak.githubsearch.entities.User
 
 
 class UserEntityUserMapper: Mapper<UserEntity, User>() {

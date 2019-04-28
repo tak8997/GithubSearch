@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.byungtak.githubsearch.R
-import com.github.byungtak.githubsearch.data.model.User
-import com.github.byungtak.githubsearch.ui.OnUserFavoriteClickListener
-import com.github.byungtak.githubsearch.ui.search.users.UserAdapter
+import com.github.byungtak.githubsearch.ui.common.OnUserFavoriteClickListener
+import com.github.byungtak.githubsearch.ui.common.UserAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -41,16 +41,13 @@ internal class FavoriteFragment: Fragment() {
         setupRecycler()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getFavoriteUsers()
+    }
+
     fun setOnUserFavoriteClickedListener(listener: OnUserFavoriteClickListener?) {
         favoriteUserListener = listener
-    }
-
-    fun updateUserFavorite(user: User) {
-        userAdapter.updateUserFavorite(user)
-    }
-
-    fun setupFavoriteUsers(users: List<User>) {
-        userAdapter.addFavoriteUsers(users)
     }
 
     private fun bindViewModel() {
@@ -62,6 +59,14 @@ internal class FavoriteFragment: Fragment() {
                 userAdapter.removeUser(adapterPosition)
 
                 favoriteUserListener?.onFavoriteUserClicked(user, tag)
+            })
+
+            favoriteUsers.observe(this@FavoriteFragment, Observer {
+                userAdapter.setUsers(it)
+            })
+
+            throwable.observe(this@FavoriteFragment, Observer {
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
             })
         }
     }

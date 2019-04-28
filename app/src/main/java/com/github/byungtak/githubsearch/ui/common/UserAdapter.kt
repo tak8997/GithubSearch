@@ -1,4 +1,4 @@
-package com.github.byungtak.githubsearch.ui.search.users
+package com.github.byungtak.githubsearch.ui.common
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,6 +10,8 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
 
     private val users = mutableListOf<User>()
     private val favoriteUsers = mutableListOf<User>()
+
+    var lastQuery = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
@@ -27,33 +29,26 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
         favoriteUsers.addAll(users)
     }
 
+    fun setupFavoriteUsers(users: List<User>) {
+        this.users.clear()
+        this.users.addAll(users)
+        notifyDataSetChanged()
+    }
+
+    fun setUsers(users: List<User>) {
+        setFavoriteUser(users)
+
+        this.users.clear()
+        this.users.addAll(users)
+        notifyDataSetChanged()
+    }
+
     fun addUsers(users: List<User>) {
-        users.forEach { user ->
-            favoriteUsers.forEach { favoriteUser ->
-                if (user.id == favoriteUser.id) {
-                    user.isFavorite = true
-                }
-            }
-        }
+        setFavoriteUser(users)
 
-        this.users.clear()
-        this.users.addAll(users)
-        notifyDataSetChanged()
-    }
-
-    fun addFavoriteUsers(users: List<User>) {
-        this.users.clear()
-        this.users.addAll(users)
-        notifyDataSetChanged()
-    }
-
-    fun updateUserFavorite(user: User) {
-        if (user.isFavorite) {
-            users.add(user)
-            notifyDataSetChanged()
-        } else {
-            users.remove(user)
-            notifyDataSetChanged()
+        for (user in users) {
+            this.users.add(user)
+            notifyItemInserted(this.users.size - 1)
         }
     }
 
@@ -74,6 +69,16 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
 
         adapterPosition?.let {
             notifyItemChanged(it)
+        }
+    }
+
+    private fun setFavoriteUser(users: List<User>) {
+        users.forEach { user ->
+            favoriteUsers.forEach { favoriteUser ->
+                if (user.id == favoriteUser.id) {
+                    user.isFavorite = true
+                }
+            }
         }
     }
 

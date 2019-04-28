@@ -8,7 +8,6 @@ import com.github.byungtak.githubsearch.data.local.UserLocalRepository
 import com.github.byungtak.githubsearch.data.remote.ApiService
 import com.github.byungtak.githubsearch.data.remote.UserRemoteDataRepository
 import com.github.byungtak.githubsearch.data.remote.UserRemoteRepository
-import com.github.byungtak.githubsearch.ui.MainViewModel
 import com.github.byungtak.githubsearch.ui.favorite.FavoriteViewModel
 import com.github.byungtak.githubsearch.ui.search.SearchViewModel
 import com.github.byungtak.githubsearch.util.SchedulersProvider
@@ -28,7 +27,6 @@ private const val HEADER_AUTH_KEY = "Authorization"
 private const val HEADER_AUTH_VALUE = "32f7a97b0f2a8c69d04fed5f8ec4917db5a4a9d5"
 
 val appModule = module {
-    viewModel { MainViewModel(get()) }
     viewModel { SearchViewModel(get()) }
     viewModel { FavoriteViewModel(get()) }
 
@@ -37,9 +35,6 @@ val appModule = module {
     single { UserDataRepository(get(), get(), get()) as UserRepository }
     single { UserLocalDataRepository() as UserLocalRepository }
     single { UserRemoteDataRepository(get()) as UserRemoteRepository }
-
-//    single { Room.databaseBuilder(androidContext(), UsersDatabase::class.java, "user-db") }
-//    single { get<UsersDatabase>().userDao() }
 
     single { Gson() }
     single(LOGGING_INTERCEPTOR) {

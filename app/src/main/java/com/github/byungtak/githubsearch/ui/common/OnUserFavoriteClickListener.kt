@@ -1,4 +1,4 @@
-package com.github.byungtak.githubsearch.ui
+package com.github.byungtak.githubsearch.ui.common
 
 import com.github.byungtak.githubsearch.data.model.User
 

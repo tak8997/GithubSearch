@@ -24,6 +24,16 @@ internal class SearchViewModel(private val searchRepository: UserRepository): Ba
     private val _showFavoriteState = MutableLiveData<User>()
     val showFavoriteState: LiveData<User> = _showFavoriteState
 
+    private val _throwable = MutableLiveData<Throwable>()
+    val throwable: LiveData<Throwable> = _throwable
+
+    private val _favoriteUsers = MutableLiveData<List<User>>()
+    val favoriteUsers: LiveData<List<User>> = _favoriteUsers
+
+    init {
+        getFavoriteUsers()
+    }
+
     fun onUserTextChanged(query: String) {
         _searchBtnEnabled.value = isValidSearch(query)
     }
@@ -41,7 +51,7 @@ internal class SearchViewModel(private val searchRepository: UserRepository): Ba
                         }
 
                         _lastQuery.value = query
-                    }) { it.printStackTrace() }
+                    }) { _throwable.value = it }
             )
         }
     }
@@ -52,7 +62,15 @@ internal class SearchViewModel(private val searchRepository: UserRepository): Ba
                 .updateFavoriteUser(user)
                 .subscribe( {
                     _showFavoriteState.value = user
-                } , { it.printStackTrace() })
+                } , { _throwable.value = it })
+        )
+    }
+
+    private fun getFavoriteUsers() {
+        disposables.add(
+            searchRepository
+                .getFavoriteUsers()
+                .subscribe(_favoriteUsers::setValue) { _throwable.value = it }
         )
     }
 

@@ -1,6 +1,7 @@
 package com.github.byungtak.githubsearch.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.byungtak.githubsearch.data.model.User
 import com.github.byungtak.githubsearch.extension.onClick
 import com.github.byungtak.githubsearch.extension.onTextChanged
-import com.github.byungtak.githubsearch.ui.common.OnUserFavoriteClickListener
 import com.github.byungtak.githubsearch.ui.common.PaginationScrollListener
 import com.github.byungtak.githubsearch.ui.common.UserAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -27,7 +27,6 @@ internal class SearchFragment: Fragment() {
         fun newInstance() = SearchFragment()
     }
 
-    private var favoriteUserListener: OnUserFavoriteClickListener? = null
     private var currentPage = PAGE_START
     private var isLoading = false
     private var isLastPage = false
@@ -55,17 +54,10 @@ internal class SearchFragment: Fragment() {
         userAdapter.removeUserFavorite(user)
     }
 
-    fun setupFavoriteUsers(users: List<User>) {
-        userAdapter.setupUserFavorite(users)
-    }
-
-    fun setOnUserFavoriteClickedListener(listener: OnUserFavoriteClickListener?) {
-        favoriteUserListener = listener
-    }
-
     private fun bindViewModel() {
         viewModel.run {
             users.observe(this@SearchFragment, Observer {
+                Log.d("MY_LOG", "hh")
                 userAdapter.setUsers(it)
             })
 
@@ -87,8 +79,14 @@ internal class SearchFragment: Fragment() {
             showFavoriteState.observe(this@SearchFragment, Observer {
                 val message = if (it.isFavorite) "좋아요 목록에 추가하였습니다" else "좋아요 목록에서 제거하였습니다"
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            })
 
-                favoriteUserListener?.onFavoriteUserClicked(it, tag)
+            throwable.observe(this@SearchFragment, Observer {
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+            })
+
+            favoriteUsers.observe(this@SearchFragment, Observer {
+                userAdapter.setupUserFavorite(it)
             })
         }
     }

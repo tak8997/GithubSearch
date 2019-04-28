@@ -29,6 +29,12 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
         favoriteUsers.addAll(users)
     }
 
+    fun setupFavoriteUsers(users: List<User>) {
+        this.users.clear()
+        this.users.addAll(users)
+        notifyDataSetChanged()
+    }
+
     fun setUsers(users: List<User>) {
         setFavoriteUser(users)
 
@@ -43,22 +49,6 @@ internal class UserAdapter(private val onFavoriteClickHandler: (User, Int) -> Un
         for (user in users) {
             this.users.add(user)
             notifyItemInserted(this.users.size - 1)
-        }
-    }
-
-    fun addFavoriteUsers(users: List<User>) {
-        this.users.clear()
-        this.users.addAll(users)
-        notifyDataSetChanged()
-    }
-
-    fun updateUserFavorite(user: User) {
-        if (user.isFavorite) {
-            users.add(user)
-            notifyDataSetChanged()
-        } else {
-            users.remove(user)
-            notifyDataSetChanged()
         }
     }
 

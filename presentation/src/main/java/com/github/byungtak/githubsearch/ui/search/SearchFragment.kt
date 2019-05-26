@@ -43,6 +43,8 @@ internal class SearchFragment: Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        viewModel.getFavoriteUsers()
+
         bindViewModel()
 
         setupRecycler()

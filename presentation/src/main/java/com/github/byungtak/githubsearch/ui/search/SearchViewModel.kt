@@ -41,14 +41,6 @@ internal class SearchViewModel(
 
     private val userEntities = mutableListOf<UserEntity>()
 
-    init {
-//        removeAllFavoriteUser.observable()
-//            .subscribe {
-//                Log.d("MY_LOG", "clear")
-//            }
-        getFavoriteUsers()
-    }
-
     fun onUserTextChanged(query: String) {
         _searchBtnEnabled.value = isValidSearch(query)
     }
@@ -100,7 +92,7 @@ internal class SearchViewModel(
         }
     }
 
-    private fun getFavoriteUsers() {
+    fun getFavoriteUsers() {
         disposables.add(
             getFavoriteUser
                 .observable()

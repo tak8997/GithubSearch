@@ -5,7 +5,6 @@ import androidx.lifecycle.Observer
 import com.github.byungtak.domain.UserRepository
 import com.github.byungtak.domain.common.DomainTestUtils
 import com.github.byungtak.domain.common.TestTransformer
-import com.github.byungtak.domain.entities.UserEntity
 import com.github.byungtak.domain.usecases.*
 import com.github.byungtak.githubsearch.entities.User
 import com.github.byungtak.githubsearch.ui.search.SearchViewModel
@@ -33,7 +32,6 @@ class SearchViewModelTest {
 
     private lateinit var userRepository: UserRepository
     private lateinit var searchViewModel: SearchViewModel
-    private lateinit var userEntities: List<UserEntity>
     private lateinit var usersObserver: Observer<List<User>>
     private lateinit var favoriteUsersObserver: Observer<List<User>>
     private lateinit var favoriteStateObserver: Observer<Boolean>
@@ -45,8 +43,6 @@ class SearchViewModelTest {
     @Before
     fun setupSearchViewModel() {
         MockitoAnnotations.initMocks(this)
-
-        userEntities = DomainTestUtils.generateUserEntityList()
 
         userRepository = mock(UserRepository::class.java)
         usersObserver = mock(Observer::class.java) as Observer<List<User>>
@@ -76,6 +72,8 @@ class SearchViewModelTest {
 
     @Test
     fun fetchFavoriteUsersFromRepository() {
+        val userEntities = DomainTestUtils.generateUserEntityList()
+
         Mockito.`when`(userRepository.getFavoriteUsers()).thenReturn(Observable.just(userEntities))
         searchViewModel.getFavoriteUsers()  // _favoriteUsers에 이벤트를 줌으로써 favoriteUsers가 이벤트를 받는다.
                                             // 위의 우리가 정의한 userEntities가 변형되어 List<User> 데이터 를 받음.
@@ -85,6 +83,8 @@ class SearchViewModelTest {
 
     @Test
     fun fetchUsersFromRepository() {
+        val userEntities = DomainTestUtils.generateUserEntityList()
+
         `when`(userRepository.searchUser(testQuery, testDefaultPage)).thenReturn(Observable.just(userEntities))
         searchViewModel.searchUser(testQuery, testDefaultPage)
 
@@ -93,7 +93,22 @@ class SearchViewModelTest {
     }
 
     @Test
+    fun onFavoriteButtonClickedStateFavorite() {
+        val userEntities = DomainTestUtils.generateUserStateFavoriteEntityList()
+
+        searchViewModel.userEntities.addAll(userEntities)
+        val userEntity = DomainTestUtils.getTestUserFavoriteStateEntity(testUserId)
+        `when`(userRepository.saveFavoriteUser(userEntity)).thenReturn(Completable.complete())
+
+        val user = userEntityUserMapper.mapFrom(userEntity)
+        searchViewModel.onFavoriteButtonClicked(user, testUserPosition)
+        verify(favoriteStateObserver).onChanged(true)
+    }
+
+    @Test
     fun onFavoriteButtonClicked() {
+        val userEntities = DomainTestUtils.generateUserEntityList()
+
         searchViewModel.userEntities.addAll(userEntities)
         val userEntity = DomainTestUtils.getTestUserEntity(testUserId)
         `when`(userRepository.removeFavoriteUser(userEntity)).thenReturn(Completable.complete())
@@ -103,5 +118,6 @@ class SearchViewModelTest {
         verify(favoriteStateObserver).onChanged(false)
 
     }
+
 
 }

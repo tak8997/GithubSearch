@@ -1,5 +1,6 @@
 package com.github.byungtak.githubsearch.ui.search
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.byungtak.domain.common.Mapper
@@ -8,7 +9,6 @@ import com.github.byungtak.domain.usecases.*
 import com.github.byungtak.githubsearch.BaseViewModel
 import com.github.byungtak.githubsearch.entities.User
 import com.github.byungtak.githubsearch.util.isValidSearch
-import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 
 internal class SearchViewModel(
@@ -41,7 +41,7 @@ internal class SearchViewModel(
     private val _favoriteUsers = MutableLiveData<List<User>>()
     val favoriteUsers: LiveData<List<User>> = _favoriteUsers
 
-    private val userEntities = mutableListOf<UserEntity>()
+    val userEntities = mutableListOf<UserEntity>()
 
     fun onUserTextChanged(query: String) {
         _searchBtnEnabled.value = isValidSearch(query)
@@ -75,19 +75,16 @@ internal class SearchViewModel(
 
     fun onFavoriteButtonClicked(user: User, position: Int) {
         if (user.isFavorite) {
-            Observable.just(userEntities)
-                .flatMapIterable { it }
-                .filter { it.id == user.id }
-                .map { saveFavoriteUser.saveUser(it) }
+            saveFavoriteUser
+                .saveUser(userEntities[position])
                 .subscribe({
+                    Log.d("MY_LOG", user.isFavorite.toString())
                     _favoriteState.value = user.isFavorite
-                }, { _throwable.value = it })
+                } ,{ _throwable.value = it })
                 .addTo(disposables)
         } else {
-            Observable.just(userEntities)
-                .flatMapIterable { it }
-                .filter { it.id == user.id }
-                .map { removeFavoriteUser.removeUser(it) }
+            removeFavoriteUser
+                .removeUser(userEntities[position])
                 .subscribe({
                     _favoriteState.value = user.isFavorite
                 }, { _throwable.value = it })

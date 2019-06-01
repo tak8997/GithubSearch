@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.github.byungtak.domain.UserRepository
 import com.github.byungtak.domain.common.DomainTestUtils
 import com.github.byungtak.domain.common.TestTransformer
+import com.github.byungtak.domain.entities.UserEntity
 import com.github.byungtak.domain.usecases.*
 import com.github.byungtak.githubsearch.entities.User
 import com.github.byungtak.githubsearch.ui.search.SearchViewModel
@@ -32,6 +33,7 @@ class SearchViewModelTest {
 
     private lateinit var userRepository: UserRepository
     private lateinit var searchViewModel: SearchViewModel
+    private lateinit var userEntities: List<UserEntity>
     private lateinit var usersObserver: Observer<List<User>>
     private lateinit var favoriteUsersObserver: Observer<List<User>>
     private lateinit var favoriteStateObserver: Observer<Boolean>
@@ -116,8 +118,6 @@ class SearchViewModelTest {
         val user = userEntityUserMapper.mapFrom(userEntity)
         searchViewModel.onFavoriteButtonClicked(user, testUserPosition)
         verify(favoriteStateObserver).onChanged(false)
-
     }
-
 
 }

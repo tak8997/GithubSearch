@@ -1,6 +1,5 @@
 package com.github.byungtak.githubsearch.ui.search
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.byungtak.domain.common.Mapper
@@ -78,7 +77,6 @@ internal class SearchViewModel(
             saveFavoriteUser
                 .saveUser(userEntities[position])
                 .subscribe({
-                    Log.d("MY_LOG", user.isFavorite.toString())
                     _favoriteState.value = user.isFavorite
                 } ,{ _throwable.value = it })
                 .addTo(disposables)

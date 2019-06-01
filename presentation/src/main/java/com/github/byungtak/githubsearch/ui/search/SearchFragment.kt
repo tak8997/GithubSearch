@@ -76,7 +76,7 @@ internal class SearchFragment: Fragment() {
                 btn_search.isEnabled = it
             })
 
-            showFavoriteState.observe(this@SearchFragment, Observer {
+            favoriteState.observe(this@SearchFragment, Observer {
                 val message = if (it) "좋아요 목록에 추가하였습니다" else "좋아요 목록에서 제거하였습니다"
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             })

@@ -92,14 +92,6 @@ internal class SearchViewModel(
                     _favoriteState.value = user.isFavorite
                 }, { _throwable.value = it })
                 .addTo(disposables)
-
-//            disposables.add(
-//                removeFavoriteUser
-//                    .removeUser(userEntities[adapterPosition])
-//                    .subscribe({
-//                        _favoriteState.value = user.isFavorite
-//                    }, { _throwable.value = it })
-//            )
         }
     }
 

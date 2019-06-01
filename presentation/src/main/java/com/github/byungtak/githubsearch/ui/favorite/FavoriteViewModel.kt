@@ -38,12 +38,6 @@ internal class FavoriteViewModel(
                     _removeUser.value = Pair(user, position)
                 }, { _throwable.value = it })
                 .addTo(disposables)
-
-//            removeFavoriteUser
-//                .removeUser(userEntities[adapterPosition])
-//                .subscribe({
-//                    _removeUser.value = Pair(user, adapterPosition)
-//                }, { _throwable.value = it })
         )
     }
 

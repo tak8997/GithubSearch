@@ -1,5 +1,6 @@
 package com.github.byungtak.githubsearch.ui.search
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.byungtak.domain.common.Mapper
@@ -8,6 +9,7 @@ import com.github.byungtak.domain.usecases.*
 import com.github.byungtak.githubsearch.BaseViewModel
 import com.github.byungtak.githubsearch.entities.User
 import com.github.byungtak.githubsearch.util.isValidSearch
+import io.reactivex.rxkotlin.addTo
 
 internal class SearchViewModel(
     private val searchUser: SearchUser,
@@ -30,8 +32,8 @@ internal class SearchViewModel(
     private val _searchBtnEnabled = MutableLiveData<Boolean>()
     val searchBtnEnabled: LiveData<Boolean> = _searchBtnEnabled
 
-    private val _showFavoriteState = MutableLiveData<Boolean>()
-    val showFavoriteState: LiveData<Boolean> = _showFavoriteState
+    private val _favoriteState = MutableLiveData<Boolean>()
+    val favoriteState: LiveData<Boolean> = _favoriteState
 
     private val _throwable = MutableLiveData<Throwable>()
     val throwable: LiveData<Throwable> = _throwable
@@ -39,7 +41,7 @@ internal class SearchViewModel(
     private val _favoriteUsers = MutableLiveData<List<User>>()
     val favoriteUsers: LiveData<List<User>> = _favoriteUsers
 
-    private val userEntities = mutableListOf<UserEntity>()
+    val userEntities = mutableListOf<UserEntity>()
 
     fun onUserTextChanged(query: String) {
         _searchBtnEnabled.value = isValidSearch(query)
@@ -51,56 +53,53 @@ internal class SearchViewModel(
         }
 
         if (isValidSearch(query)) {
-            disposables.add(
-                searchUser
-                    .searchUser(query, currentPage)
-                    .map {
-                        userEntities.addAll(it)
-                        it
+            searchUser
+                .searchUser(query, currentPage)
+                .map {
+                    userEntities.addAll(it)
+                    it
+                }
+                .flatMap { entitiyUserMapper.observable(it) }
+                .subscribe({
+                    if (currentPage == 1) {
+                        _users.value = it
+                    } else {
+                        _addUsers.value = it
                     }
-                    .flatMap { entitiyUserMapper.observable(it) }
-                    .subscribe({
-                        if (currentPage == 1) {
-                            _users.value = it
-                        } else {
-                            _addUsers.value = it
-                        }
 
-                        _lastQuery.value = query
-                    }) { _throwable.value = it }
-            )
+                    _lastQuery.value = query
+                }) { _throwable.value = it }
+                .addTo(disposables)
         }
     }
 
-    fun onFavoriteButtonClicked(user: User, adapterPosition: Int) {
+    fun onFavoriteButtonClicked(user: User, position: Int) {
         if (user.isFavorite) {
-            disposables.add(
-                saveFavoriteUser
-                    .saveUser(userEntities[adapterPosition])
-                    .subscribe({
-                        _showFavoriteState.value = user.isFavorite
-                    }, { _throwable.value = it })
-            )
+            saveFavoriteUser
+                .saveUser(userEntities[position])
+                .subscribe({
+                    Log.d("MY_LOG", user.isFavorite.toString())
+                    _favoriteState.value = user.isFavorite
+                } ,{ _throwable.value = it })
+                .addTo(disposables)
         } else {
-            disposables.add(
-                removeFavoriteUser
-                    .removeUser(userEntities[adapterPosition])
-                    .subscribe({
-                        _showFavoriteState.value = user.isFavorite
-                    }, { _throwable.value = it })
-            )
+            removeFavoriteUser
+                .removeUser(userEntities[position])
+                .subscribe({
+                    _favoriteState.value = user.isFavorite
+                }, { _throwable.value = it })
+                .addTo(disposables)
         }
     }
 
     fun getFavoriteUsers() {
-        disposables.add(
-            getFavoriteUser
-                .observable()
-                .flatMap { entitiyUserMapper.observable(it) }
-                .subscribe(_favoriteUsers::setValue) {
-                    it.printStackTrace()
-                    _throwable.value = it }
-        )
+        getFavoriteUser
+            .observable()
+            .flatMap { entitiyUserMapper.observable(it) }
+            .subscribe(_favoriteUsers::setValue) {
+                it.printStackTrace()
+                _throwable.value = it }
+            .addTo(disposables)
     }
 
 }

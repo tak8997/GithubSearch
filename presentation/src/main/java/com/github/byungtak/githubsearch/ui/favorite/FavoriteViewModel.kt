@@ -8,6 +8,8 @@ import com.github.byungtak.domain.usecases.GetFavoriteUser
 import com.github.byungtak.domain.usecases.RemoveFavoriteUser
 import com.github.byungtak.githubsearch.BaseViewModel
 import com.github.byungtak.githubsearch.entities.User
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.addTo
 
 internal class FavoriteViewModel(
     private val getFavoriteUser: GetFavoriteUser,
@@ -26,27 +28,29 @@ internal class FavoriteViewModel(
 
     private lateinit var userEntities: List<UserEntity>
 
-    fun onFavoriteButtonClicked(user: User, adapterPosition: Int) {
+    fun onFavoriteButtonClicked(user: User, position: Int) {
         disposables.add(
-            removeFavoriteUser
-                .removeUser(userEntities[adapterPosition])
+            Observable.just(userEntities)
+                .flatMapIterable { it }
+                .filter { it.id == user.id }
+                .map { removeFavoriteUser.removeUser(it) }
                 .subscribe({
-                    _removeUser.value = Pair(user, adapterPosition)
+                    _removeUser.value = Pair(user, position)
                 }, { _throwable.value = it })
+                .addTo(disposables)
         )
     }
 
     fun getFavoriteUsers() {
-        disposables.add(
-            getFavoriteUser
-                .observable()
-                .map {
-                    userEntities = it
-                    it
-                }
-                .flatMap { entitiyUserMapper.observable(it) }
-                .subscribe(_favoriteUsers::setValue) { _throwable.value = it }
-        )
+        getFavoriteUser
+            .observable()
+            .map {
+                userEntities = it
+                it
+            }
+            .flatMap { entitiyUserMapper.observable(it) }
+            .subscribe(_favoriteUsers::setValue) { _throwable.value = it }
+            .addTo(disposables)
     }
 
 }

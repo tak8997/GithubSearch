@@ -26,7 +26,7 @@ internal class FavoriteViewModel(
     private val _throwable = MutableLiveData<Throwable>()
     val throwable: LiveData<Throwable> = _throwable
 
-    private lateinit var userEntities: List<UserEntity>
+    var userEntities = mutableListOf<UserEntity>()
 
     fun onFavoriteButtonClicked(user: User, position: Int) {
         disposables.add(
@@ -45,7 +45,7 @@ internal class FavoriteViewModel(
         getFavoriteUser
             .observable()
             .map {
-                userEntities = it
+                userEntities.addAll(it)
                 it
             }
             .flatMap { entitiyUserMapper.observable(it) }

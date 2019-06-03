@@ -84,7 +84,7 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun fetchUsersFromRepository() {
+    fun searchUsersFromRepository() {
         val userEntities = DomainTestUtils.generateUserEntityList()
 
         `when`(userRepository.searchUser(testQuery, testDefaultPage)).thenReturn(Observable.just(userEntities))

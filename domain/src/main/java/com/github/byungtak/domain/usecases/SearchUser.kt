@@ -26,7 +26,7 @@ class SearchUser(
         } ?: return Observable.just(emptyList())
     }
 
-    fun searchUser(query: String, currentPage: Int): Observable<List<UserEntity>> {
+    fun searchUsers(query: String, currentPage: Int): Observable<List<UserEntity>> {
         val data = HashMap<String, Pair<String, Int>>()
         data[PARAM_SEARCH_QUERY] = Pair(query, currentPage)
         return observable(data)

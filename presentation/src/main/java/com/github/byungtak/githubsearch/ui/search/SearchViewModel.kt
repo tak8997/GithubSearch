@@ -53,7 +53,7 @@ internal class SearchViewModel(
 
         if (isValidSearch(query)) {
             searchUser
-                .searchUser(query, currentPage)
+                .searchUsers(query, currentPage)
                 .map {
                     userEntities.addAll(it)
                     it

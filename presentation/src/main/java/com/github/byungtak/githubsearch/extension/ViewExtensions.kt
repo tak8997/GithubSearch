@@ -49,7 +49,7 @@ inline fun EditText.onTextChanged(crossinline onTextChangeHandler: (String) -> U
 fun ImageView.setImageWithGlide(url: String?) =
   url?.let {
     try {
-      Glide.with(context).load(url)
+      Glide.with(context).load(it)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
         .centerCrop()
         .placeholder(R.drawable.ic_placeholder)
